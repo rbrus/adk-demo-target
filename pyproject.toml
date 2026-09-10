@@ -1,0 +1,112 @@
+[project]
+name = "adk-demo-target"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name", email = "your@email.com"},
+]
+
+
+
+dependencies = [
+    "google-adk[gcp]>=2.0.0,<3.0.0",
+    "a2a-sdk[http-server]~=0.3.22",
+    "nest-asyncio>=1.6.0,<2.0.0",
+    "opentelemetry-instrumentation-google-genai>=0.1.0,<1.0.0",
+    "gcsfs>=2024.11.0",
+    "google-cloud-logging>=3.12.0,<4.0.0",
+    "google-cloud-aiplatform[evaluation,agent-engines]>=1.149.0",
+    "protobuf>=6.31.1,<7.0.0",
+]
+requires-python = ">=3.11,<3.14"
+
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2,<10.0.0",
+    "pytest-asyncio>=1.0.0,<2.0.0",
+    "nest-asyncio>=1.6.0,<2.0.0",
+]
+
+[project.optional-dependencies]
+eval = [
+    "google-adk[eval]>=2.0.0,<3.0.0",
+    "google-cloud-aiplatform[evaluation]>=1.149.0",
+]
+lint = [
+    "ruff>=0.4.6,<1.0.0",
+    "ty>=0.0.1a0",
+    "codespell>=2.2.0,<3.0.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "C",  # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP", # pyupgrade
+    "RUF", # ruff specific rules
+]
+ignore = ["E501", "C901", "B006"] # ignore line too long, too complex
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "frontend"]
+
+[tool.ty]
+# ty is Astral's Rust-based type checker (same team as ruff/uv)
+# See: https://docs.astral.sh/ty/
+
+[tool.ty.environment]
+python-version = "3.10"
+
+[tool.ty.src]
+exclude = [".venv/**"]
+
+[tool.ty.rules]
+# Ignore common issues with third-party libraries and dynamic code patterns
+unresolved-import = "ignore"
+unresolved-attribute = "ignore"
+invalid-argument-type = "ignore"
+invalid-assignment = "ignore"
+invalid-return-type = "ignore"
+possibly-missing-attribute = "ignore"
+not-subscriptable = "ignore"
+deprecated = "ignore"
+
+[tool.codespell]
+ignore-words-list = "rouge"
+skip = "./locust_env/*,uv.lock,.venv,./frontend,**/package-lock.json"
+
+[tool.uv]
+# TODO(b/514362507): remove once google-adk supports a2a-sdk 1.0.
+# google-cloud-aiplatform 1.150+ dropped A2A 0.3.x support, breaking
+# Vertex Agent Runtime deploys for adk_a2a projects. Pin to 1.149.0
+# until ADK ships the a2a-sdk 1.0 compatibility shim (go/orcas-rfc-803).
+# Cloud Run / GKE A2A deploys serve via the a2a-sdk HTTP server and never
+# hit the agent_engines registration path, so they are not pinned.
+# To use eval features added in aiplatform 1.150+, either remove this
+# override (accepting the A2A deploy breakage) or bump the pinned
+# version, then re-run `agents-cli install`.
+override-dependencies = ["google-cloud-aiplatform==1.149.0"]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.pytest.ini_options]
+pythonpath = "."
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app","frontend"]
+
+
