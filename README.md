@@ -64,6 +64,24 @@ uv run python -m pytest tests/unit           # the cells that keep it honest
 DEMO_DEFENCE=hardened agents-cli playground  # talk to it locally
 ```
 
+## Automated Red-Teaming with `agent-probe`
+
+Atlas serves as the ground-truth benchmark target for **[agent-probe](https://github.com/rbrus/agent-probe)**. You can run automated security probe assessments against Atlas across all three defence postures:
+
+```bash
+# Terminal 1: Run Atlas locally (none | basic | hardened)
+DEMO_DEFENCE=none agents-cli playground
+
+# Terminal 2: Run automated red-teaming probe
+agent-probe scan --target http://localhost:8000/api/chat --fail-on high
+```
+
+* On `none`: `agent-probe` exposes prompt injection, system prompt extraction, and credential fishing.
+* On `basic`: direct prompt leakage is blocked, but privileged tool actions remain vulnerable.
+* On `hardened`: `agent-probe` confirms full defense posture with zero false positives.
+
+For multi-transport agent connectivity across REST, MCP, A2A, WebSockets, and Browser CDP, see **[redwire](https://github.com/rbrus/redwire)**.
+
 ## The Agent Runtime blocker
 
 **Agent Runtime provisions Python 3.14 and does not honour the project's pinned environment. Every
