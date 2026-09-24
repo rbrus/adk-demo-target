@@ -148,3 +148,7 @@ Not a product, not a security control, and not an example of how to build a supp
 target. The secret is fake, the bank is fake, and the accounts are two dictionary entries.
 
 Licensed under the Apache License, Version 2.0. See `LICENSE`.
+
+---
+
+*Part of a broader AI-agent security R&D effort — reach an agent, attack it, judge the result, defend what it can touch. A larger, integrated toolkit is in the works. More in 2026.*
