@@ -55,18 +55,21 @@ def setup_telemetry() -> str | None:
         )
 
     # Set up OpenTelemetry exporters for Cloud Trace and Cloud Logging
-    credentials, project_id = google.auth.default()
-    otel_hooks = get_gcp_exporters(
-        enable_cloud_tracing=True,
-        enable_cloud_metrics=False,
-        enable_cloud_logging=True,
-        google_auth=(credentials, project_id),
-    )
-    otel_resource = get_gcp_resource(project_id)
-    maybe_set_otel_providers(
-        otel_hooks_to_setup=[otel_hooks],
-        otel_resource=otel_resource,
-    )
+    try:
+        credentials, project_id = google.auth.default()
+        otel_hooks = get_gcp_exporters(
+            enable_cloud_tracing=True,
+            enable_cloud_metrics=False,
+            enable_cloud_logging=True,
+            google_auth=(credentials, project_id),
+        )
+        otel_resource = get_gcp_resource(project_id)
+        maybe_set_otel_providers(
+            otel_hooks_to_setup=[otel_hooks],
+            otel_resource=otel_resource,
+        )
+    except Exception as e:
+        logging.warning("GCP OpenTelemetry exporters not configured: %s", e)
 
     # Set up GenAI SDK instrumentation
     _setup_instrumentation_lib_if_installed()

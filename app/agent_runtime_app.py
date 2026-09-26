@@ -90,7 +90,7 @@ class AgentEngineApp(A2aAgent):
                     ),
                 ],
             ),
-            rpc_url="http://localhost:9999/",
+            rpc_url=os.getenv("A2A_RPC_URL", "http://localhost:9999/"),
             agent_version=os.getenv("AGENT_VERSION", "0.1.0"),
         )
         agent_card = await agent_card_builder.build()

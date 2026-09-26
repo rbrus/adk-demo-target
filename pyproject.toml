@@ -1,7 +1,7 @@
 [project]
 name = "adk-demo-target"
 version = "0.1.0"
-description = ""
+description = "Atlas — a deliberately attackable ADK agent for AI red-teaming"
 authors = [
     {name = "Your Name", email = "your@email.com"},
 ]
@@ -55,6 +55,7 @@ select = [
     "RUF", # ruff specific rules
 ]
 ignore = ["E501", "C901", "B006"] # ignore line too long, too complex
+allowed-confusables = ["’"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["app", "frontend"]
